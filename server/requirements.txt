@@ -1,0 +1,5 @@
+pipecat-ai[anthropic,azure,piper,runner,silero,webrtc,whisper]==1.12.0
+anthropic>=1.15,<2
+feedparser>=6.0
+httpx>=0.27
+python-dotenv>=1.0
