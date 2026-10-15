@@ -1,0 +1,12 @@
+services:
+  jarvis:
+    build: .
+    container_name: jarvis
+    env_file: .env
+    volumes:
+      - ./models:/models        # Whisper e vozes Piper (descarregados)
+      - ./data/memory:/data/memory  # memória do Jarvis, abre como vault do Obsidian
+    # O WebRTC usa portas UDP aleatórias, por isso a rede do host é o mais simples.
+    network_mode: host
+    mem_limit: 2g
+    restart: unless-stopped

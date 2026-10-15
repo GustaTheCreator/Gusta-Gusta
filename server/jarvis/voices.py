@@ -18,6 +18,7 @@ def _make_tts(lang: str):
             settings=AzureTTSService.Settings(
                 voice=settings.azure_voice_pt if lang == "pt" else settings.azure_voice_en,
                 language=Language.PT_PT if lang == "pt" else Language.EN_GB,
+                effect=None,
             ),
         )
     from pipecat.services.piper.tts import PiperTTSService
