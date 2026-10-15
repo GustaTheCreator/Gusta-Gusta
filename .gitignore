@@ -1,0 +1,20 @@
+# Segredos: a chave da API e restantes credenciais ficam só no .env local
+.env
+.env.*
+!.env.example
+
+# Memória do Jarvis (notas pessoais) e modelos descarregados
+data/
+memory/
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Web
+node_modules/
+web/dist/
+*.tsbuildinfo
