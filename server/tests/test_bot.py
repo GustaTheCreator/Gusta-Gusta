@@ -1,21 +1,8 @@
-import pytest
 from pipecat.adapters.services.anthropic_adapter import AnthropicLLMAdapter
 from pipecat.processors.aggregators.llm_context import LLMContext
 
-from jarvis import bot, voices
-from jarvis.language import LanguageState, pick_language
-
-
-def test_pick_language_keeps_pt_and_en():
-    assert pick_language("pt", [("pt", 0.9)]) is None
-    assert pick_language("en", [("en", 0.8)]) is None
-
-
-def test_pick_language_maps_other_languages_to_closest():
-    # Frases curtas em português são muitas vezes detetadas como galego ou espanhol.
-    assert pick_language("gl", [("gl", 0.5), ("pt", 0.3), ("en", 0.1)]) == "pt"
-    assert pick_language("de", [("de", 0.4), ("en", 0.35), ("pt", 0.05)]) == "en"
-    assert pick_language("xx", None) == "pt"
+from jarvis import bot
+from jarvis.config import _whisper_model
 
 
 def test_tools_exposed_to_claude():
@@ -23,22 +10,20 @@ def test_tools_exposed_to_claude():
         LLMContext(tools=bot.TOOLS), enable_prompt_caching=False, system_instruction="x"
     )
     tools = {t["name"]: t["input_schema"] for t in params["tools"]}
-    assert set(tools) == {"get_news", "get_weather", "search_web", "save_memory"}
-    assert tools["save_memory"]["required"] == ["topic", "fact"]
+    assert set(tools) == {"get_news", "get_weather", "search_web", "recall_memory", "remember"}
+    assert tools["remember"]["required"] == ["topic", "fact", "kind"]
+    assert tools["recall_memory"]["required"] == ["topic"]
 
 
-def test_system_prompt_includes_memory(monkeypatch):
-    monkeypatch.setattr(bot.memory, "load_context", lambda: "# Família\n- A mãe chama-se Ana.")
+def test_system_prompt_includes_memory_and_is_english_only(monkeypatch):
+    monkeypatch.setattr(bot.memory, "load_context", lambda: "About him:\n- Family: His mum is Ana.")
     prompt = bot.system_prompt()
-    assert "A mãe chama-se Ana." in prompt and "European Portuguese" in prompt
+    assert "His mum is Ana." in prompt
+    assert "always speak English" in prompt and "Portuguese (Portugal" not in prompt
 
 
-@pytest.mark.asyncio
-async def test_bilingual_tts_routes_by_language(monkeypatch):
-    monkeypatch.setattr(voices, "_make_tts", lambda lang: voices.FunctionFilter(lambda f: True))
-    state = LanguageState("pt")
-    tts = voices.BilingualTTS(state)
-    pt_filter, en_filter = (branch.processors[1] for branch in tts._pipelines)
-    assert await pt_filter._filter(None) and not await en_filter._filter(None)
-    state.current = "en"
-    assert not await pt_filter._filter(None) and await en_filter._filter(None)
+def test_english_only_whisper_models():
+    assert _whisper_model("base") == "base.en"
+    assert _whisper_model("small") == "small.en"
+    assert _whisper_model("large-v3-turbo") == "large-v3-turbo"
+    assert _whisper_model("small.en") == "small.en"

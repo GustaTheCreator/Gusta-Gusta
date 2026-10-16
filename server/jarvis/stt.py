@@ -1,4 +1,4 @@
-"""Whisper local que deteta se falas português ou inglês."""
+"""Whisper local, só em inglês."""
 import asyncio
 from collections.abc import AsyncGenerator
 
@@ -8,10 +8,13 @@ from loguru import logger
 
 from pipecat.frames.frames import ErrorFrame, Frame, TranscriptionFrame
 from pipecat.services.whisper.stt import WhisperSTTService
+from pipecat.transcriptions.language import Language
 from pipecat.utils.time import time_now_iso8601
 
 from .config import settings
-from .language import LanguageState, pick_language
+
+# Nomes que o Whisper costuma ouvir mal; o prompt inicial puxa-o para a grafia certa.
+INITIAL_PROMPT = "Jarvis, Gustavo."
 
 _models: dict[str, WhisperModel] = {}
 
@@ -28,11 +31,14 @@ def get_model(name: str) -> WhisperModel:
     return _models[name]
 
 
-class BilingualWhisperSTT(WhisperSTTService):
-    def __init__(self, language_state: LanguageState, **kwargs):
-        self._language_state = language_state
+class EnglishWhisperSTT(WhisperSTTService):
+    def __init__(self, **kwargs):
         super().__init__(
-            settings=WhisperSTTService.Settings(model=settings.whisper_model, language=None),
+            settings=WhisperSTTService.Settings(
+                model=settings.whisper_model,
+                language=Language.EN,
+                initial_prompt=INITIAL_PROMPT,
+            ),
             device="cpu",
             compute_type="int8",
             **kwargs,
@@ -41,18 +47,18 @@ class BilingualWhisperSTT(WhisperSTTService):
     def _load(self):
         self._model = get_model(settings.whisper_model)
 
-    def _transcribe(self, audio: np.ndarray) -> tuple[str, str]:
-        segments, info = self._model.transcribe(audio, language=None, beam_size=1)
-        segments = list(segments)
-        forced = pick_language(info.language, info.all_language_probs)
-        if forced:
-            segments, _ = self._model.transcribe(audio, language=forced, beam_size=1)
-            segments = list(segments)
-        threshold = self._settings.no_speech_prob
-        text = " ".join(
-            s.text.strip() for s in segments if threshold is None or s.no_speech_prob < threshold
+    def _transcribe(self, audio: np.ndarray) -> str:
+        segments, _ = self._model.transcribe(
+            audio,
+            language="en",
+            beam_size=settings.whisper_beam_size,
+            initial_prompt=INITIAL_PROMPT,
+            condition_on_previous_text=False,
         )
-        return text.strip(), forced or info.language
+        threshold = self._settings.no_speech_prob
+        return " ".join(
+            s.text.strip() for s in segments if threshold is None or s.no_speech_prob < threshold
+        ).strip()
 
     async def run_stt(self, audio: bytes) -> AsyncGenerator[Frame, None]:
         if not self._model:
@@ -60,10 +66,9 @@ class BilingualWhisperSTT(WhisperSTTService):
             return
         await self.start_processing_metrics()
         audio_float = np.frombuffer(audio, dtype=np.int16).astype(np.float32) / 32768.0
-        text, language = await asyncio.to_thread(self._transcribe, audio_float)
+        text = await asyncio.to_thread(self._transcribe, audio_float)
         await self.stop_processing_metrics()
         if not text:
             return
-        self._language_state.current = language
-        logger.debug(f"Transcription [{language}]: {text}")
-        yield TranscriptionFrame(text, self._user_id, time_now_iso8601(), language)
+        logger.debug(f"Transcription: {text}")
+        yield TranscriptionFrame(text, self._user_id, time_now_iso8601(), Language.EN)

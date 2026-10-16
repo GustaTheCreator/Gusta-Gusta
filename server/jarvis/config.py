@@ -14,6 +14,9 @@ DEFAULT_FEEDS = (
     "Expresso|https://expresso.pt/rss"
 )
 
+# Os modelos ".en" só percebem inglês, mas percebem-no melhor do que os multilingues do mesmo tamanho.
+ENGLISH_ONLY = {"tiny", "base", "small", "medium"}
+
 
 def _feeds(raw: str) -> list[tuple[str, str]]:
     feeds = []
@@ -28,21 +31,27 @@ def _env(name: str, default: str) -> str:
     return os.getenv(name) or default
 
 
+def _whisper_model(name: str) -> str:
+    return f"{name}.en" if name in ENGLISH_ONLY else name
+
+
 @dataclass(frozen=True)
 class Settings:
     anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
     claude_model: str = _env("CLAUDE_MODEL", "claude-opus-5-5")
     claude_effort: str = _env("CLAUDE_EFFORT", "low")
+    # Modelo que revê a conversa no fim e decide o que guardar na memória.
+    memory_model: str = _env("MEMORY_MODEL", _env("CLAUDE_MODEL", "claude-opus-5-5"))
 
-    whisper_model: str = _env("WHISPER_MODEL", "base")
+    whisper_model: str = _whisper_model(_env("WHISPER_MODEL", "base"))
+    # 1 é o mais rápido; valores maiores percebem melhor mas demoram mais no CPU.
+    whisper_beam_size: int = int(_env("WHISPER_BEAM_SIZE", "3"))
     models_dir: Path = Path(_env("MODELS_DIR", "./models"))
     memory_dir: Path = Path(_env("MEMORY_DIR", "./data/memory"))
 
-    piper_voice_en: str = _env("PIPER_VOICE_EN", "en_GB-alan-medium")
-    piper_voice_pt: str = _env("PIPER_VOICE_PT", "pt_PT-tugao-medium")
+    piper_voice: str = _env("PIPER_VOICE", _env("PIPER_VOICE_EN", "en_GB-alan-medium"))
 
-    default_language: str = _env("DEFAULT_LANGUAGE", "pt")
-    default_city: str = _env("DEFAULT_CITY", "Lisboa")
+    default_city: str = _env("DEFAULT_CITY", "Lisbon")
     news_feeds: list[tuple[str, str]] = field(
         default_factory=lambda: _feeds(_env("NEWS_FEEDS", DEFAULT_FEEDS))
     )

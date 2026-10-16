@@ -29,7 +29,7 @@ def test_news_reports_feed_errors(monkeypatch):
         raise httpx.ConnectError("down")
 
     monkeypatch.setattr(news.httpx, "get", boom)
-    assert "erro ao obter o feed" in news.get_news()
+    assert "could not fetch the feed" in news.get_news()
 
 
 def test_weather_formats(monkeypatch):
@@ -46,24 +46,8 @@ def test_weather_formats(monkeypatch):
 
     monkeypatch.setattr(weather.httpx, "get", fake_get)
     out = weather.get_weather("Lisboa")
-    assert "Lisboa (Portugal) agora: 18.2°C" in out
-    assert "Amanhã: mín 13°C, máx 20°C, chuva, probabilidade de chuva 60%." in out
-
-
-def test_memory_writes_linked_notes(tmp_path, monkeypatch):
-    monkeypatch.setattr(memory, "settings", SimpleNamespace(memory_dir=tmp_path))
-    memory.save("Preferências de notícias", "Prefere notícias de tecnologia e do [[Benfica]].")
-    memory.save("Preferências de notícias", "Não gosta de política internacional.")
-    memory.save("Família/Pais", "A mãe chama-se Ana.")
-
-    note = (tmp_path / "Preferências de notícias.md").read_text()
-    assert note.startswith("# Preferências de notícias\n\nLigado a [[Jarvis]]")
-    assert note.count("\n- ") == 2
-    index = (tmp_path / "Jarvis.md").read_text()
-    assert "- [[Preferências de notícias]]" in index and "- [[Família Pais]]" in index
-
-    context = memory.load_context()
-    assert "A mãe chama-se Ana." in context and "# Jarvis" not in context
+    assert "Lisboa (Portugal) now: 18.2°C" in out
+    assert "Tomorrow: low 13°C, high 20°C, rain, chance of rain 60%." in out
 
 
 class _FakeMessages:

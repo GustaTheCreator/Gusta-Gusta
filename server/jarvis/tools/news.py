@@ -1,4 +1,4 @@
-"""Manchetes do dia a partir de RSS."""
+"""Manchetes do dia a partir de RSS (em português; o Claude resume-as em inglês)."""
 import concurrent.futures as cf
 
 import feedparser
@@ -14,7 +14,7 @@ def _fetch(name: str, url: str, limit: int) -> str:
         resp = httpx.get(url, headers=UA, timeout=8, follow_redirects=True)
         resp.raise_for_status()
     except httpx.HTTPError as exc:
-        return f"## {name}\n(erro ao obter o feed: {exc.__class__.__name__})"
+        return f"## {name}\n(could not fetch the feed: {exc.__class__.__name__})"
     feed = feedparser.parse(resp.content)
     lines = [f"## {name}"]
     for entry in feed.entries[:limit]:

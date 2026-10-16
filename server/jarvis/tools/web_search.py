@@ -9,7 +9,7 @@ MAX_CONTINUATIONS = 3
 
 INSTRUCTIONS = (
     "Search the web and answer the question below with the key facts only, in at most "
-    "five short sentences, in the same language as the question. No URLs, no lists."
+    "five short sentences, in English. No URLs, no lists."
 )
 
 
