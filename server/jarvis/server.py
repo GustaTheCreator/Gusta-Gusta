@@ -32,7 +32,7 @@ async def lifespan(_app: FastAPI):
     await webrtc.close()
 
 
-app = FastAPI(title="Jarvis", lifespan=lifespan)
+app = FastAPI(title="Gusta-Gusta", lifespan=lifespan)
 
 
 @app.post("/api/offer")

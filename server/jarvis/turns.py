@@ -1,6 +1,6 @@
 """Quando é que o Gustavo acabou de falar.
 
-Só com silêncio, uma pausa a meio da frase ("what about the... um...") fecha a vez e o Jarvis
+Só com silêncio, uma pausa a meio da frase ("what about the... um...") fecha a vez e o Gusta-Gusta
 responde a meia pergunta. Aqui, se a transcrição parece a meio, espera-se mais um pouco.
 """
 import re

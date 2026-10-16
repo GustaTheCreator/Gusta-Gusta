@@ -14,7 +14,7 @@ from pipecat.utils.time import time_now_iso8601
 from .config import settings
 
 # Nomes que o Whisper costuma ouvir mal; o prompt inicial puxa-o para a grafia certa.
-INITIAL_PROMPT = "Jarvis, Gustavo."
+INITIAL_PROMPT = "Gusta-Gusta, Gustavo."
 
 _models: dict[str, WhisperModel] = {}
 

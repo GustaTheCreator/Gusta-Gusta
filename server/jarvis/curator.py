@@ -14,7 +14,7 @@ from .tools import memory
 
 GREETING_MARK = "(It is "  # a instrução da saudação, que não é o Gustavo a falar
 
-INSTRUCTIONS = """You maintain the long-term memory of Jarvis, Gustavo's voice assistant. Read the conversation and decide what is worth remembering for future days. Most conversations contain nothing worth keeping; returning empty lists is normal.
+INSTRUCTIONS = """You maintain the long-term memory of Gusta-Gusta, Gustavo's voice assistant. Read the conversation and decide what is worth remembering for future days. Most conversations contain nothing worth keeping; returning empty lists is normal.
 
 Save (in "updates"):
 - Preferences, habits, plans and facts about his life or the people in it that he states.
@@ -23,7 +23,7 @@ Save (in "updates"):
 Do not save:
 - The routine request itself (asking for the news, the weather, the time, greetings, thanks).
 - Headlines or answers he heard without reacting to them.
-- What Jarvis said, unless Gustavo confirmed it as true about himself.
+- What Gusta-Gusta said, unless Gustavo confirmed it as true about himself.
 - Anything already in the existing memory below.
 
 Put a specific subject he asked about only once, without any follow-up, in "candidates" instead. It becomes an interest if he brings it up again on another day.
@@ -65,7 +65,7 @@ def _text(content) -> str:
 
 
 def transcript(messages: list) -> str:
-    """Só o que o Gustavo e o Jarvis disseram, sem chamadas a ferramentas."""
+    """Só o que o Gustavo e o Gusta-Gusta disseram, sem chamadas a ferramentas."""
     lines = []
     for msg in messages:
         if not isinstance(msg, dict) or msg.get("role") not in ("user", "assistant"):
@@ -73,7 +73,7 @@ def transcript(messages: list) -> str:
         text = " ".join(_text(msg.get("content")).split())
         if not text or text.startswith(GREETING_MARK):
             continue
-        lines.append(f"{'Gustavo' if msg['role'] == 'user' else 'Jarvis'}: {text}")
+        lines.append(f"{'Gustavo' if msg['role'] == 'user' else 'Gusta-Gusta'}: {text}")
     return "\n".join(lines)
 
 

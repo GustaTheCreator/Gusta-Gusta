@@ -30,7 +30,7 @@ from .tools import memory, news, weather, web_search
 from .turns import PatientTurnStop
 from .voices import make_tts
 
-SYSTEM = """You are Jarvis, Gustavo's personal voice assistant, in the style of Tony Stark's J.A.R.V.I.S.: calm, witty and precise. You always speak English. Gustavo lives in Portugal.
+SYSTEM = """You are Gusta-Gusta, Gustavo's personal voice assistant, in the style of Tony Stark's J.A.R.V.I.S.: calm, witty and precise. You always speak English. Gustavo lives in Portugal.
 
 Your words are spoken aloud by a speech synthesizer, so:
 - Keep answers short and conversational: one to three sentences unless he asks for detail.
@@ -54,7 +54,7 @@ What you remember about Gustavo:
 STOP_SECS = 0.5
 SPEECH_TIMEOUT = 0.4
 UNFINISHED_EXTRA = 1.2
-# Voz contínua (s) antes de contar como fala: ruídos curtos e tosse já não cortam o Jarvis.
+# Voz contínua (s) antes de contar como fala: ruídos curtos e tosse já não cortam o Gusta-Gusta.
 START_SECS = 0.3
 
 FILLER = "One moment."

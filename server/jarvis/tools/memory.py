@@ -12,7 +12,7 @@ Cada nota tem um cabeçalho YAML que o Obsidian mostra como propriedades:
     ---
     # Formula 1
 
-    Linked to [[Jarvis]]
+    Linked to [[Gusta-Gusta]]
     Related: [[Max Verstappen]]
 
     - Follows the championship fight closely. _(2026-10-16)_
@@ -35,7 +35,7 @@ from pathlib import Path
 
 from ..config import settings
 
-INDEX = "Jarvis"
+INDEX = "Gusta-Gusta"
 STATE_DIR = ".jarvis"  # pastas com ponto não aparecem no Obsidian
 KINDS = ("preference", "person", "habit", "fact", "interest")
 SECTION = {
@@ -246,7 +246,7 @@ def find(topic: str, existing: list[Note] | None = None) -> Note | None:
 
 
 def _rebuild_index(existing: list[Note]):
-    out = [f"# {INDEX}", "", "What Jarvis knows about Gustavo, one note per topic.", ""]
+    out = [f"# {INDEX}", "", "What Gusta-Gusta knows about Gustavo, one note per topic.", ""]
     for kind in KINDS:
         group = sorted((n for n in existing if n.kind == kind), key=lambda n: (-n.mentions, n.title))
         if group:
