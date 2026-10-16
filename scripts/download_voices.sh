@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Descarrega as vozes masculinas do Piper (só precisas disto com TTS_PROVIDER=piper).
+# Descarrega as vozes masculinas do Piper.
 # A voz pt_PT tem "ã" no nome, o que parte o descarregador do Piper; por isso vai por URL.
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")/.." && pwd)/models/piper"

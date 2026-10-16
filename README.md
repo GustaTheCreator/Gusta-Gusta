@@ -6,7 +6,7 @@ A página tem só uma bola. Tocas nela e falas: fica azul e mexe-se com a tua vo
 
 ```
 Telemóvel (browser) ──WebRTC por Tailscale──► homeserver (Docker)
-  microfone ─► Silero VAD ─► Whisper (local) ─► Claude ─► voz (Azure ou Piper) ─► altifalante
+  microfone ─► Silero VAD ─► Whisper (local) ─► Claude ─► voz (Piper) ─► altifalante
                                                   │
                                     notícias, meteorologia, pesquisa web, memória
 ```
@@ -16,14 +16,13 @@ Telemóvel (browser) ──WebRTC por Tailscale──► homeserver (Docker)
 - Docker no servidor
 - Uma chave da API da Anthropic
 - Tailscale no servidor e no telemóvel
-- Para a voz mais fluida: uma conta Azure com um recurso **Speech** no escalão gratuito F0, que chega para uso pessoal. Sem isso usa o Piper, que corre todo em casa mas soa mais robótico.
 
 ## Instalação
 
 ```bash
 git clone https://github.com/GustaTheCreator/Gusta-Gusta.git && cd Gusta-Gusta
-cp .env.example .env            # mete a ANTHROPIC_API_KEY e, se tiveres, a AZURE_SPEECH_KEY
-./scripts/download_voices.sh    # só se usares TTS_PROVIDER=piper
+cp .env.example .env            # mete a ANTHROPIC_API_KEY
+./scripts/download_voices.sh    # vozes Piper
 docker compose up -d --build    # o Whisper descarrega-se no primeiro arranque
 ```
 
@@ -43,7 +42,6 @@ Tudo no `.env` (nunca vai para o git). Os campos principais:
 |---|---|
 | `CLAUDE_MODEL` | `claude-opus-5-5` por omissão. `claude-haiku-5-5` responde mais depressa e é muito mais barato |
 | `CLAUDE_EFFORT` | `low` chega para conversa |
-| `TTS_PROVIDER` | `azure` (Ryan em inglês, Duarte em pt-PT) ou `piper` (Alan e Tugão, 100% local) |
 | `WHISPER_MODEL` | `base` por omissão; `small` percebe melhor mas é mais lento no CPU |
 | `DEFAULT_LANGUAGE` | língua da saudação inicial, `pt` ou `en` |
 | `DEFAULT_CITY` | cidade usada quando pedes o tempo sem dizer onde |
@@ -69,6 +67,6 @@ cd web && npm install && npm run dev
 
 - `server/jarvis/bot.py`: o pipeline de voz e as ferramentas que o Claude pode usar
 - `server/jarvis/stt.py`: Whisper com deteção de português/inglês
-- `server/jarvis/voices.py`: uma voz por língua
+- `server/jarvis/voices.py`: uma voz Piper por língua (Alan e Tugão)
 - `server/jarvis/tools/`: notícias (RSS), meteorologia (Open-Meteo), pesquisa web e memória
 - `web/src/Orb.tsx`: a bola

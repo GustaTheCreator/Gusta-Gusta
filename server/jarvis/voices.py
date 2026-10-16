@@ -1,26 +1,27 @@
 """Uma voz masculina por idioma; a ativa segue o idioma em que o Gustavo falou."""
+from functools import cache
+
+from piper import PiperVoice
 from pipecat.frames.frames import Frame
 from pipecat.pipeline.parallel_pipeline import ParallelPipeline
 from pipecat.processors.filters.function_filter import FunctionFilter
-from pipecat.transcriptions.language import Language
 
 from .config import settings
 from .language import LanguageState
 
 
-def _make_tts(lang: str):
-    if settings.tts_provider == "azure":
-        from pipecat.services.azure.tts import AzureTTSService
+# O PiperTTSService carrega o modelo da voz no construtor (~3 s por voz), e o bot cria um novo
+# a cada ligação. Guardando o modelo, só a primeira ligação (ou o arranque) paga esse custo.
+PiperVoice.load = cache(PiperVoice.load)
 
-        return AzureTTSService(
-            api_key=settings.azure_speech_key,
-            region=settings.azure_speech_region,
-            settings=AzureTTSService.Settings(
-                voice=settings.azure_voice_pt if lang == "pt" else settings.azure_voice_en,
-                language=Language.PT_PT if lang == "pt" else Language.EN_GB,
-                effect=None,
-            ),
-        )
+
+def preload():
+    """Carrega as duas vozes no arranque do servidor."""
+    _make_tts("pt")
+    _make_tts("en")
+
+
+def _make_tts(lang: str):
     from pipecat.services.piper.tts import PiperTTSService
 
     return PiperTTSService(

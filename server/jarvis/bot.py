@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 from loguru import logger
 
 from pipecat.audio.vad.silero import SileroVADAnalyzer
+from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import LLMRunFrame, TTSSpeakFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
@@ -19,6 +20,8 @@ from pipecat.services.llm_service import FunctionCallParams
 from pipecat.transports.base_transport import TransportParams
 from pipecat.transports.smallwebrtc.connection import SmallWebRTCConnection
 from pipecat.transports.smallwebrtc.transport import SmallWebRTCTransport
+from pipecat.turns.user_stop import SpeechTimeoutUserTurnStopStrategy
+from pipecat.turns.user_turn_strategies import UserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
 
 from .config import settings
@@ -43,6 +46,11 @@ Tools:
 
 What you already remember about Gustavo:
 {memory}"""
+
+# Silêncio (s) que fecha a tua vez: o VAD marca a pausa e depois espera mais um pouco por si
+# continuares a falar. Total ~0,9 s.
+STOP_SECS = 0.5
+SPEECH_TIMEOUT = 0.4
 
 FILLERS = {"pt": "Um momento.", "en": "One moment."}
 
@@ -119,7 +127,14 @@ async def run_bot(connection: SmallWebRTCConnection):
     context = LLMContext(tools=TOOLS)
     user_aggregator, assistant_aggregator = LLMContextAggregatorPair(
         context,
-        user_params=LLMUserAggregatorParams(vad_analyzer=SileroVADAnalyzer()),
+        user_params=LLMUserAggregatorParams(
+            vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=STOP_SECS)),
+            # Fim de turno só por silêncio. O padrão do Pipecat usa um modelo Smart Turn que
+            # se carrega a cada ligação (arranque lento) e na CPU do servidor não fecha o turno.
+            user_turn_strategies=UserTurnStrategies(
+                stop=[SpeechTimeoutUserTurnStopStrategy(user_speech_timeout=SPEECH_TIMEOUT)]
+            ),
+        ),
     )
 
     pipeline = Pipeline(

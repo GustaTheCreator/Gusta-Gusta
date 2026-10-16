@@ -38,12 +38,6 @@ class Settings:
     models_dir: Path = Path(_env("MODELS_DIR", "./models"))
     memory_dir: Path = Path(_env("MEMORY_DIR", "./data/memory"))
 
-    # "azure" (vozes neurais, mais fluidas) ou "piper" (100% local).
-    tts_provider: str = _env("TTS_PROVIDER", "azure" if os.getenv("AZURE_SPEECH_KEY") else "piper")
-    azure_speech_key: str = os.getenv("AZURE_SPEECH_KEY", "")
-    azure_speech_region: str = _env("AZURE_SPEECH_REGION", "westeurope")
-    azure_voice_en: str = _env("AZURE_VOICE_EN", "en-GB-RyanNeural")
-    azure_voice_pt: str = _env("AZURE_VOICE_PT", "pt-PT-DuarteNeural")
     piper_voice_en: str = _env("PIPER_VOICE_EN", "en_GB-alan-medium")
     piper_voice_pt: str = _env("PIPER_VOICE_PT", "pt_PT-tugao-medium")
 
