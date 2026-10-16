@@ -55,14 +55,15 @@ def test_note_round_trip_keeps_hand_edits(vault):
 
 def test_old_notes_without_frontmatter_still_work(vault):
     (vault / "Preferências de notícias.md").write_text(
-        "# Preferências de notícias\n\nLigado a [[Jarvis]]\n\n- Prefere tecnologia. _(2026-10-01)_\n"
+        "# Preferências de notícias\n\nLigado a [[Jarvis]]\n\n- Prefere tecnologia. _(2026-10-01)_\n",
+        encoding="utf-8",
     )
     assert "existing topic Preferências de notícias" in memory.save(
         "preferencias de noticias", "Gosta do Benfica."
     )
     note = memory.find("Preferências de notícias")
     assert len(note.facts) == 2 and note.mentions == 2
-    assert "Ligado a" not in (vault / "Preferências de notícias.md").read_text()
+    assert "Ligado a" not in (vault / "Preferências de notícias.md").read_text(encoding="utf-8")
 
 
 def test_loose_question_becomes_interest_only_when_it_comes_back(vault, monkeypatch):
