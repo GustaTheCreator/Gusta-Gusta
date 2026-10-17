@@ -41,7 +41,7 @@ Tudo no `.env` (nunca vai para o git). Os campos principais:
 
 | Variável | Para que serve |
 |---|---|
-| `CLAUDE_MODEL` | `claude-opus-5-5` por omissão. `claude-haiku-5-5` responde mais depressa e é muito mais barato |
+| `CLAUDE_MODEL` | `claude-haiku-5-5` por omissão: responde depressa e poupa os limites da subscrição |
 | `CLAUDE_EFFORT` | `low` chega para conversa |
 | `WHISPER_MODEL` | `base` por omissão (usa o `base.en`); `small` percebe melhor mas é mais lento no CPU |
 | `WHISPER_BEAM_SIZE` | `3` por omissão; `1` é mais rápido, `5` percebe melhor |

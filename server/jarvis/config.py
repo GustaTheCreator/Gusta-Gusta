@@ -39,10 +39,10 @@ def _whisper_model(name: str) -> str:
 
 @dataclass(frozen=True)
 class Settings:
-    claude_model: str = _env("CLAUDE_MODEL", "claude-opus-5-5")
+    claude_model: str = _env("CLAUDE_MODEL", "claude-haiku-5-5")
     claude_effort: str = _env("CLAUDE_EFFORT", "low")
     # Modelo que revê a conversa no fim e decide o que guardar na memória.
-    memory_model: str = _env("MEMORY_MODEL", _env("CLAUDE_MODEL", "claude-opus-5-5"))
+    memory_model: str = _env("MEMORY_MODEL", _env("CLAUDE_MODEL", "claude-haiku-5-5"))
 
     whisper_model: str = _whisper_model(_env("WHISPER_MODEL", "base"))
     # 1 é o mais rápido; valores maiores percebem melhor mas demoram mais no CPU.
