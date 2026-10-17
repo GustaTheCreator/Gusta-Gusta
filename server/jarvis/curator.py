@@ -2,13 +2,13 @@
 
 Corre depois de desligares, fora do caminho da voz, por isso não atrasa respostas.
 """
-from functools import lru_cache
 from typing import Literal
 
-import anthropic
+from claude_agent_sdk import ClaudeSDKError, ResultMessage, query
 from loguru import logger
 from pydantic import BaseModel, Field
 
+from .brain import base_options
 from .config import settings
 from .tools import memory
 
@@ -51,11 +51,6 @@ class Review(BaseModel):
     candidates: list[Candidate]
 
 
-@lru_cache(maxsize=1)
-def _client() -> anthropic.AsyncAnthropic:
-    return anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key or None)
-
-
 def _text(content) -> str:
     if isinstance(content, str):
         return content
@@ -93,25 +88,25 @@ async def review(messages: list):
     if "Gustavo:" not in convo:
         return
     existing = memory.load_context() or "(empty)"
+    options = base_options(
+        model=settings.memory_model,
+        system_prompt=INSTRUCTIONS,
+        output_format={"type": "json_schema", "schema": Review.model_json_schema()},
+    )
+    prompt = (
+        f"<existing_memory>\n{existing}\n</existing_memory>\n\n"
+        f"<conversation>\n{convo}\n</conversation>"
+    )
+    parsed = None
     try:
-        response = await _client().messages.parse(
-            model=settings.memory_model,
-            max_tokens=4000,
-            system=INSTRUCTIONS,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"<existing_memory>\n{existing}\n</existing_memory>\n\n"
-                    f"<conversation>\n{convo}\n</conversation>",
-                }
-            ],
-            output_format=Review,
-        )
-    except anthropic.APIError as exc:
+        async for msg in query(prompt=prompt, options=options):
+            if isinstance(msg, ResultMessage) and msg.structured_output is not None:
+                parsed = Review.model_validate(msg.structured_output)
+    except (ClaudeSDKError, ValueError) as exc:
         logger.warning(f"Memory review failed: {exc.__class__.__name__}")
         return
-    if response.stop_reason == "refusal" or response.parsed_output is None:
+    if parsed is None:
         logger.warning("Memory review returned nothing")
         return
-    changed = apply(response.parsed_output)
+    changed = apply(parsed)
     logger.info(f"Memory review: {changed} change(s)")

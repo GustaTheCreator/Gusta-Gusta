@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
+from claude_agent_sdk import ResultMessage
 
 from jarvis import curator
 from jarvis.tools import memory
@@ -33,13 +34,16 @@ def test_transcript_skips_greeting_and_tools():
     ]
 
 
-class _FakeMessages:
-    def __init__(self, review):
-        self.review, self.calls = review, []
+def _fake_query(review, calls):
+    async def query(*, prompt, options):
+        calls.append((prompt, options))
+        if review is not None:
+            yield ResultMessage(
+                subtype="success", duration_ms=0, duration_api_ms=0, is_error=False, num_turns=1,
+                session_id="s", structured_output=review.model_dump(),
+            )
 
-    async def parse(self, **kwargs):
-        self.calls.append(kwargs)
-        return SimpleNamespace(stop_reason="end_turn", parsed_output=self.review)
+    return query
 
 
 @pytest.mark.asyncio
@@ -52,13 +56,15 @@ async def test_review_applies_updates_and_skips_routine(vault, monkeypatch):
         ],
         candidates=[curator.Candidate(topic="State budget", detail="He heard about the budget.")],
     )
-    fake = _FakeMessages(review)
-    monkeypatch.setattr(curator, "_client", lambda: SimpleNamespace(messages=fake))
+    calls = []
+    monkeypatch.setattr(curator, "query", _fake_query(review, calls))
 
     await curator.review(MESSAGES)
 
-    assert fake.calls[0]["output_format"] is curator.Review
-    assert "Tell me more about the metro strike." in fake.calls[0]["messages"][0]["content"]
+    prompt, options = calls[0]
+    assert options.output_format["schema"] == curator.Review.model_json_schema()
+    assert options.tools == []
+    assert "Tell me more about the metro strike." in prompt
     assert memory.find("Lisbon metro strike").kind == "interest"
     assert memory.find("Today's news") is None
     assert memory.find("State budget") is None  # só candidato, por agora
@@ -67,7 +73,7 @@ async def test_review_applies_updates_and_skips_routine(vault, monkeypatch):
 
 @pytest.mark.asyncio
 async def test_review_skips_empty_conversations(monkeypatch):
-    fake = _FakeMessages(None)
-    monkeypatch.setattr(curator, "_client", lambda: SimpleNamespace(messages=fake))
+    calls = []
+    monkeypatch.setattr(curator, "query", _fake_query(None, calls))
     await curator.review(MESSAGES[:2])
-    assert fake.calls == []
+    assert calls == []

@@ -6,22 +6,23 @@ A página tem só uma bola. Tocas nela e falas: fica azul e mexe-se com a tua vo
 
 ```
 Telemóvel (browser) ──WebRTC por Tailscale──► homeserver (Docker)
-  microfone ─► Silero VAD ─► Whisper (local) ─► Claude ─► voz (Piper) ─► altifalante
+  microfone ─► Silero VAD ─► Whisper (local) ─► Claude (Agent SDK) ─► voz (Piper) ─► altifalante
                                                   │
-                                    notícias, meteorologia, pesquisa web, memória
+                                    notícias, meteorologia, pesquisa web (WebSearch do Claude), memória
 ```
 
 ## O que precisas
 
 - Docker no servidor
-- Uma chave da API da Anthropic
+- Uma subscrição Claude (Pro/Max): o servidor usa o Claude Agent SDK, sem custo por token
 - Tailscale no servidor e no telemóvel
 
 ## Instalação
 
 ```bash
 git clone https://github.com/GustaTheCreator/Gusta-Gusta.git && cd Gusta-Gusta
-cp .env.example .env            # mete a ANTHROPIC_API_KEY
+claude setup-token              # num PC com o Claude Code: gera o token da subscrição
+cp .env.example .env            # mete-o em CLAUDE_CODE_OAUTH_TOKEN
 ./scripts/download_voices.sh    # voz Piper (Alan, inglês)
 docker compose up -d --build    # o Whisper descarrega-se no primeiro arranque
 ```

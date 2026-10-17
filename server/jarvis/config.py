@@ -6,6 +6,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+# O SDK usa a subscrição (CLAUDE_CODE_OAUTH_TOKEN); uma chave da API na env passava à frente e cobrava por token.
+os.environ.pop("ANTHROPIC_API_KEY", None)
 
 DEFAULT_FEEDS = (
     "Público|https://feeds.feedburner.com/PublicoRSS,"
@@ -37,7 +39,6 @@ def _whisper_model(name: str) -> str:
 
 @dataclass(frozen=True)
 class Settings:
-    anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
     claude_model: str = _env("CLAUDE_MODEL", "claude-opus-5-5")
     claude_effort: str = _env("CLAUDE_EFFORT", "low")
     # Modelo que revê a conversa no fim e decide o que guardar na memória.

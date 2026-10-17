@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from jarvis.tools import memory, news, weather, web_search
+from jarvis.tools import memory, news, weather
 
 RSS = """<?xml version="1.0"?><rss version="2.0"><channel><title>X</title>
 <item><title>Governo aprova orçamento</title><description>Votado hoje.</description></item>
@@ -48,24 +48,3 @@ def test_weather_formats(monkeypatch):
     out = weather.get_weather("Lisboa")
     assert "Lisboa (Portugal) now: 18.2°C" in out
     assert "Tomorrow: low 13°C, high 20°C, rain, chance of rain 60%." in out
-
-
-class _FakeMessages:
-    def __init__(self, responses):
-        self.responses, self.calls = list(responses), []
-
-    async def create(self, **kwargs):
-        self.calls.append({**kwargs, "messages": list(kwargs["messages"])})
-        return self.responses.pop(0)
-
-
-@pytest.mark.asyncio
-async def test_web_search_resumes_pause_turn(monkeypatch):
-    paused = SimpleNamespace(stop_reason="pause_turn", content=[SimpleNamespace(type="server_tool_use")])
-    done = SimpleNamespace(stop_reason="end_turn", content=[SimpleNamespace(type="text", text="O Porto ganhou 2-1.")])
-    fake = _FakeMessages([paused, done])
-    monkeypatch.setattr(web_search, "_client", lambda: SimpleNamespace(beta=SimpleNamespace(messages=fake)))
-
-    assert await web_search.search("Quem ganhou o jogo do Porto?") == "O Porto ganhou 2-1."
-    assert fake.calls[0]["tools"][0]["type"] == "web_search_20260209"
-    assert fake.calls[1]["messages"][1] == {"role": "assistant", "content": paused.content}

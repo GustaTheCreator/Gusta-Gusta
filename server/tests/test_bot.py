@@ -1,18 +1,11 @@
-from pipecat.adapters.services.anthropic_adapter import AnthropicLLMAdapter
-from pipecat.processors.aggregators.llm_context import LLMContext
-
-from jarvis import bot
+from jarvis import bot, brain
 from jarvis.config import _whisper_model
 
 
 def test_tools_exposed_to_claude():
-    params = AnthropicLLMAdapter().get_llm_invocation_params(
-        LLMContext(tools=bot.TOOLS), enable_prompt_caching=False, system_instruction="x"
-    )
-    tools = {t["name"]: t["input_schema"] for t in params["tools"]}
-    assert set(tools) == {"get_news", "get_weather", "search_web", "recall_memory", "remember"}
-    assert tools["remember"]["required"] == ["topic", "fact", "kind"]
-    assert tools["recall_memory"]["required"] == ["topic"]
+    assert {t.name for t in brain.TOOLS} == {"get_news", "get_weather", "recall_memory", "remember"}
+    assert "WebSearch" in brain.ALLOWED and "mcp__jarvis__remember" in brain.ALLOWED
+    assert brain.voice_options("x").tools == ["WebSearch"]
 
 
 def test_system_prompt_includes_memory_and_is_english_only(monkeypatch):

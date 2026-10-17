@@ -18,3 +18,5 @@ __pycache__/
 node_modules/
 web/dist/
 *.tsbuildinfo
+
+/graphify-out
