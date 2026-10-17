@@ -120,8 +120,13 @@ class AgentLLMService(LLMService):
 
     async def _connect(self) -> ClaudeSDKClient:
         if self._client is None:
-            self._client = ClaudeSDKClient(options=self._options)
-            await self._client.connect()
+            client = ClaudeSDKClient(options=self._options)
+            try:
+                await client.connect()
+            except BaseException:  # inclui o cancelamento por interrupção: não deixa meia-sessão guardada
+                await client.disconnect()
+                raise
+            self._client = client
         return self._client
 
     async def _settle(self, client: ClaudeSDKClient):
