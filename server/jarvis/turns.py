@@ -1,6 +1,6 @@
 """Quando é que o Gustavo acabou de falar.
 
-Só com silêncio, uma pausa a meio da frase ("what about the... um...") fecha a vez e o Gusta-Gusta
+Só com silêncio, uma pausa a meio da frase ("e o que é que... hum...") fecha a vez e o Duarte
 responde a meia pergunta. Aqui, se a transcrição parece a meio, espera-se mais um pouco.
 """
 import re
@@ -9,10 +9,10 @@ from pipecat.turns.user_stop import SpeechTimeoutUserTurnStopStrategy
 
 # Palavras que quase nunca acabam uma frase.
 HANGING_WORDS = {
-    "a", "an", "the", "and", "or", "but", "so", "because", "if", "then", "that", "which",
-    "to", "of", "for", "with", "about", "from", "in", "on", "at", "by", "into", "like",
-    "my", "your", "his", "her", "their", "our", "is", "are", "was", "were", "what", "who",
-    "where", "when", "how", "why", "um", "uh", "erm", "er", "hmm", "also", "maybe", "just",
+    "a", "o", "as", "os", "um", "uma", "uns", "umas", "e", "ou", "mas", "porque", "se", "que",
+    "então", "de", "do", "da", "dos", "das", "em", "no", "na", "nos", "nas", "para", "por",
+    "com", "sem", "sobre", "ao", "aos", "à", "às", "meu", "minha", "teu", "tua", "seu", "sua",
+    "qual", "quem", "onde", "quando", "porquê", "hum", "pois", "também", "talvez", "só",
 }
 
 
@@ -24,7 +24,7 @@ def looks_unfinished(text: str) -> bool:
         return True
     if text.endswith(("?", "!")):
         return False
-    words = re.findall(r"[a-z']+", text.lower())
+    words = re.findall(r"[a-zà-ÿ']+", text.lower())
     return bool(words) and words[-1] in HANGING_WORDS
 
 

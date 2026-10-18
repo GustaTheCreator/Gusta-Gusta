@@ -1,4 +1,4 @@
-"""Whisper local, só em inglês."""
+"""Whisper local, só em português."""
 import asyncio
 from collections.abc import AsyncGenerator
 
@@ -14,7 +14,7 @@ from pipecat.utils.time import time_now_iso8601
 from .config import settings
 
 # Nomes que o Whisper costuma ouvir mal; o prompt inicial puxa-o para a grafia certa.
-INITIAL_PROMPT = "Gusta-Gusta, Gustavo."
+INITIAL_PROMPT = "Duarte, Gustavo."
 
 _models: dict[str, WhisperModel] = {}
 
@@ -31,12 +31,12 @@ def get_model(name: str) -> WhisperModel:
     return _models[name]
 
 
-class EnglishWhisperSTT(WhisperSTTService):
+class PortugueseWhisperSTT(WhisperSTTService):
     def __init__(self, **kwargs):
         super().__init__(
             settings=WhisperSTTService.Settings(
                 model=settings.whisper_model,
-                language=Language.EN,
+                language=Language.PT,
                 initial_prompt=INITIAL_PROMPT,
             ),
             device="cpu",
@@ -50,7 +50,7 @@ class EnglishWhisperSTT(WhisperSTTService):
     def _transcribe(self, audio: np.ndarray) -> str:
         segments, _ = self._model.transcribe(
             audio,
-            language="en",
+            language="pt",
             beam_size=settings.whisper_beam_size,
             initial_prompt=INITIAL_PROMPT,
             condition_on_previous_text=False,
@@ -71,4 +71,4 @@ class EnglishWhisperSTT(WhisperSTTService):
         if not text:
             return
         logger.debug(f"Transcription: {text}")
-        yield TranscriptionFrame(text, self._user_id, time_now_iso8601(), Language.EN)
+        yield TranscriptionFrame(text, self._user_id, time_now_iso8601(), Language.PT)

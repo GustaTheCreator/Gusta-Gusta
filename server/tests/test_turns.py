@@ -14,13 +14,13 @@ from jarvis.turns import PatientTurnStop, looks_unfinished
 @pytest.mark.parametrize(
     "text, unfinished",
     [
-        ("What's the weather in Lisbon?", False),
-        ("Tell me about the news.", False),
-        ("Tell me about the", True),
-        ("And what about Benfica and.", True),
-        ("I was thinking, um...", True),
-        ("So what happened with,", True),
-        ("Thanks", False),
+        ("Qual é o tempo em Lisboa?", False),
+        ("Fala-me das notícias.", False),
+        ("Fala-me das", True),
+        ("E o que se passa com o Benfica e.", True),
+        ("Estava a pensar, hum...", True),
+        ("Então o que aconteceu com,", True),
+        ("Obrigado", False),
         ("", False),
     ],
 )
@@ -51,11 +51,11 @@ async def _run(texts: list[str], speech_timeout=0.05, extra=0.3):
 
 @pytest.mark.asyncio
 async def test_complete_sentence_ends_turn_quickly():
-    stopped = await _run(["What's the weather like today?"])
+    stopped = await _run(["Como está o tempo hoje?"])
     assert len(stopped) == 1 and stopped[0] < 0.2
 
 
 @pytest.mark.asyncio
 async def test_unfinished_sentence_waits_longer():
-    stopped = await _run(["Tell me more about the"])
+    stopped = await _run(["Fala-me mais sobre o"])
     assert len(stopped) == 1 and stopped[0] >= 0.3

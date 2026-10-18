@@ -16,7 +16,7 @@ type Props = {
   error?: string | null;
 };
 
-// Azul enquanto ouve, violeta enquanto pensa, dourado enquanto o Gusta-Gusta fala, cinzento desligado.
+// Azul enquanto ouve, violeta enquanto pensa, dourado enquanto o Duarte fala, cinzento desligado.
 const IDLE: PlasmaConfig = {
   useCustomColors: true,
   backgroundColor: "#000000",
@@ -131,11 +131,11 @@ export function Orb({ onConnect, onDisconnect, error }: Props) {
       ? "A ligar…"
       : connected
         ? botSpeaking
-          ? "Gusta-Gusta"
+          ? "Duarte"
           : thinking
             ? "A pensar…"
             : "Estou a ouvir"
-        : "Toca para falar com o Gusta-Gusta";
+        : "Toca para falar com o Duarte";
 
   const toggle = () => {
     if (busy) return;

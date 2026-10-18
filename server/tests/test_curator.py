@@ -27,9 +27,9 @@ MESSAGES = [
 def test_transcript_skips_greeting_and_tools():
     text = curator.transcript(MESSAGES)
     assert text.splitlines() == [
-        "Gusta-Gusta: Good morning, Gustavo.",
+        "Duarte: Good morning, Gustavo.",
         "Gustavo: What's the news today?",
-        "Gusta-Gusta: The budget passed and the metro is on strike.",
+        "Duarte: The budget passed and the metro is on strike.",
         "Gustavo: Tell me more about the metro strike.",
     ]
 

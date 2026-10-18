@@ -4,3 +4,4 @@
 2026-10-17 — Chat and curator use Claude Agent SDK on the subscription, not the paid API; ANTHROPIC_API_KEY dropped from env — no per-token cost
 2026-10-17 — Own web_search tool removed; SDK WebSearch used — less code
 2026-10-17 — Runtime memory stays only on the server, no copy/sync to the PC — keeps assistant memory private and separate from the dev vault
+2026-10-18 — App renamed to Duarte (repo/package/container unchanged); Portuguese-only: Piper pt_PT-tugao-medium, Whisper small multilingual forced to pt, English voice removed; memory notes stay in English — user request

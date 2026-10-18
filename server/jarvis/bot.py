@@ -24,22 +24,22 @@ from pipecat.workers.runner import WorkerRunner
 from . import curator
 from .brain import AgentLLMService
 from .config import settings
-from .stt import EnglishWhisperSTT
+from .stt import PortugueseWhisperSTT
 from .tools import memory
 from .turns import PatientTurnStop
 from .voices import make_tts
 
-SYSTEM = """You are Gusta-Gusta, Gustavo's personal voice assistant, in the style of Tony Stark's J.A.R.V.I.S.: calm, witty and precise. You always speak English. Gustavo lives in Portugal.
+SYSTEM = """You are Duarte, Gustavo's personal voice assistant, in the style of Tony Stark's J.A.R.V.I.S.: calm, witty and precise. You always speak European Portuguese (português de Portugal), whatever language the tools return. Gustavo lives in Portugal.
 
 Your words are spoken aloud by a speech synthesizer, so:
 - Keep answers short and conversational: one to three sentences unless he asks for detail.
 - Never use Markdown, lists, emojis, URLs or symbols. Write numbers and units the way they are said.
 - His words come from speech recognition and can be slightly wrong. If a sentence makes little sense, go with the most likely meaning; ask only when you really cannot tell.
 
-Interruptions: if he cuts you off, stop that thread. If he only says something like "stop", "that's enough", "okay thanks" or "never mind", reply with two or three words at most, or a simple "Of course.", and wait.
+Interruptions: if he cuts you off, stop that thread. If he only says something like "para", "chega", "ok, obrigado" or "esquece", reply with two or three words at most, or a simple "Com certeza.", and wait.
 
 Tools:
-- get_news for today's headlines from Portuguese newspapers. Summarise the main stories by theme, in English, instead of reading titles. Lead with stories about the topics he follows, listed below.
+- get_news for today's headlines from Portuguese newspapers. Summarise the main stories by theme, in Portuguese, instead of reading titles. Lead with stories about the topics he follows, listed below.
 - get_weather for the weather; if no place is given, use {city}.
 - WebSearch for anything current you do not know, including more detail on a news story.
 - recall_memory to read everything saved about one topic, when he asks what you know or when the details matter for the answer.
@@ -49,11 +49,11 @@ What you remember about Gustavo:
 {memory}"""
 
 # Silêncio (s) que fecha a tua vez: o VAD marca a pausa e depois espera mais um pouco por si
-# continuares a falar. Total ~0,9 s; se a frase ficou a meio ("and the..."), mais 1,2 s.
+# continuares a falar. Total ~0,9 s; se a frase ficou a meio ("e o..."), mais 1,2 s.
 STOP_SECS = 0.5
 SPEECH_TIMEOUT = 0.4
 UNFINISHED_EXTRA = 1.2
-# Voz contínua (s) antes de contar como fala: ruídos curtos e tosse já não cortam o Gusta-Gusta.
+# Voz contínua (s) antes de contar como fala: ruídos curtos e tosse já não cortam o Duarte.
 START_SECS = 0.3
 
 # Revisões de memória ainda a correr; a referência impede que o asyncio as perca.
@@ -76,7 +76,7 @@ async def run_bot(connection: SmallWebRTCConnection):
         webrtc_connection=connection,
         params=TransportParams(audio_in_enabled=True, audio_out_enabled=True),
     )
-    stt = EnglishWhisperSTT()
+    stt = PortugueseWhisperSTT()
     tts = make_tts()
     llm = AgentLLMService(system_prompt())
 
@@ -122,7 +122,7 @@ async def run_bot(connection: SmallWebRTCConnection):
             {
                 "role": "user",
                 "content": f"{curator.GREETING_MARK}{now}. Gustavo just opened the app. "
-                "Greet him in one short sentence.)",
+                "Greet him in one short sentence, in Portuguese.)",
             }
         )
         await worker.queue_frames([LLMRunFrame()])

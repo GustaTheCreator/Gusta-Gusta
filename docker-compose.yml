@@ -5,7 +5,7 @@ services:
     env_file: .env
     volumes:
       - ./models:/models        # Whisper e vozes Piper (descarregados)
-      - ./data/memory:/data/memory  # memória do Gusta-Gusta, abre como vault do Obsidian
+      - ./data/memory:/data/memory  # memória do Duarte, abre como vault do Obsidian
     # O WebRTC usa portas UDP aleatórias, por isso a rede do host é o mais simples.
     network_mode: host
     mem_limit: 2g

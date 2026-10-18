@@ -1,5 +1,4 @@
 from jarvis import bot, brain
-from jarvis.config import _whisper_model
 
 
 def test_tools_exposed_to_claude():
@@ -8,15 +7,8 @@ def test_tools_exposed_to_claude():
     assert brain.voice_options("x").tools == ["WebSearch"]
 
 
-def test_system_prompt_includes_memory_and_is_english_only(monkeypatch):
+def test_system_prompt_includes_memory_and_is_portuguese_only(monkeypatch):
     monkeypatch.setattr(bot.memory, "load_context", lambda: "About him:\n- Family: His mum is Ana.")
     prompt = bot.system_prompt()
     assert "His mum is Ana." in prompt
-    assert "always speak English" in prompt and "Portuguese (Portugal" not in prompt
-
-
-def test_english_only_whisper_models():
-    assert _whisper_model("base") == "base.en"
-    assert _whisper_model("small") == "small.en"
-    assert _whisper_model("large-v3-turbo") == "large-v3-turbo"
-    assert _whisper_model("small.en") == "small.en"
+    assert "always speak European Portuguese" in prompt and "always speak English" not in prompt

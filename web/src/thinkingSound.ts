@@ -1,4 +1,4 @@
-// Pulso suave sintetizado (sem ficheiro de áudio) enquanto o Gusta-Gusta pensa.
+// Pulso suave sintetizado (sem ficheiro de áudio) enquanto o Duarte pensa.
 let ctx: AudioContext | null = null;
 let gain: GainNode | null = null;
 

@@ -46,10 +46,10 @@ def test_note_round_trip_keeps_hand_edits(vault):
     memory.save("Benfica", "He goes to home games.", "interest")
     text = path.read_text()
     assert text.startswith("---\ntype: interest\n")
-    assert "Linked to [[Gusta-Gusta]]" in text and "Related: [[Football]]" in text
+    assert "Linked to [[Duarte]]" in text and "Related: [[Football]]" in text
     assert "Written by hand in Obsidian." in text
     assert text.count("\n- He") == 2
-    index = (vault / "Gusta-Gusta.md").read_text(encoding="utf-8")
+    index = (vault / "Duarte.md").read_text(encoding="utf-8")
     assert "## Interests" in index and "- [[Benfica]]" in index
 
 

@@ -1,4 +1,4 @@
-"""Cérebro do Gusta-Gusta: uma sessão do Claude Agent SDK por ligação, em vez da API.
+"""Cérebro do Duarte: uma sessão do Claude Agent SDK por ligação, em vez da API.
 
 O SDK corre o Claude Code por baixo e usa a subscrição (CLAUDE_CODE_OAUTH_TOKEN), por isso não
 há custo por token. Uma só sessão vive durante a ligação inteira: o contexto fica quente e o
@@ -29,7 +29,7 @@ from .config import settings
 from .tools import memory, news, weather
 
 SERVER = "jarvis"
-FILLER = "One moment."
+FILLER = "Um momento."
 # Ferramentas que demoram o suficiente para justificar a frase de espera.
 SLOW_TOOLS = {f"mcp__{SERVER}__get_news", f"mcp__{SERVER}__get_weather", "WebSearch"}
 
@@ -38,7 +38,7 @@ def _text(value: str) -> dict:
     return {"content": [{"type": "text", "text": value}]}
 
 
-@tool("get_news", "Get today's headlines from the main Portuguese newspapers (in Portuguese; summarise them in English).", {})
+@tool("get_news", "Get today's headlines from the main Portuguese newspapers (in Portuguese; summarise them in Portuguese).", {})
 async def get_news(args):
     return _text(await asyncio.to_thread(news.get_news))
 
