@@ -1,6 +1,7 @@
 """Whisper local, só em português."""
 import asyncio
 from collections.abc import AsyncGenerator
+from functools import cache
 
 import numpy as np
 from faster_whisper import WhisperModel
@@ -16,19 +17,14 @@ from .config import settings
 # Nomes que o Whisper costuma ouvir mal; o prompt inicial puxa-o para a grafia certa.
 INITIAL_PROMPT = "Duarte, Gustavo."
 
-_models: dict[str, WhisperModel] = {}
-
-
+@cache  # carregado uma vez por processo e partilhado entre ligações
 def get_model(name: str) -> WhisperModel:
-    # Carregado uma vez por processo e partilhado entre ligações.
-    if name not in _models:
-        _models[name] = WhisperModel(
-            name,
-            device="cpu",
-            compute_type="int8",
-            download_root=str(settings.models_dir / "whisper"),
-        )
-    return _models[name]
+    return WhisperModel(
+        name,
+        device="cpu",
+        compute_type="int8",
+        download_root=str(settings.models_dir / "whisper"),
+    )
 
 
 class PortugueseWhisperSTT(WhisperSTTService):

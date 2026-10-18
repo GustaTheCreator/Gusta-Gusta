@@ -170,7 +170,7 @@ class AgentLLMService(LLMService):
             return
         await self.push_frame(LLMFullResponseStartFrame())
         try:
-            await self._respond(user["content"] if isinstance(user["content"], str) else _join(user["content"]))
+            await self._respond(content_text(user["content"]))
         except asyncio.CancelledError:
             raise
         except Exception as exc:
@@ -193,5 +193,9 @@ class AgentLLMService(LLMService):
             await client.disconnect()
 
 
-def _join(parts: list) -> str:
-    return " ".join(p.get("text", "") for p in parts if isinstance(p, dict))
+def content_text(content) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return " ".join(p.get("text", "") for p in content if isinstance(p, dict) and p.get("type") == "text")
+    return ""

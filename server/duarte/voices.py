@@ -10,11 +10,6 @@ from .config import settings
 PiperVoice.load = cache(PiperVoice.load)
 
 
-def preload():
-    """Carrega a voz Piper no arranque (é também a reserva se o ElevenLabs não estiver configurado)."""
-    _piper()
-
-
 def make_tts():
     if settings.elevenlabs_api_key:
         from pipecat.services.elevenlabs.tts import ElevenLabsTTSService
@@ -24,10 +19,11 @@ def make_tts():
             voice_id=settings.elevenlabs_voice_id,
             model=settings.elevenlabs_model,
         )
-    return _piper()
+    return make_piper()
 
 
-def _piper():
+def make_piper():
+    """Também chamada no arranque para pré-carregar a voz Piper (reserva se não houver ElevenLabs)."""
     from pipecat.services.piper.tts import PiperTTSService
 
     return PiperTTSService(

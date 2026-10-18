@@ -26,8 +26,7 @@ def _fetch(name: str, url: str, limit: int) -> str:
     return "\n".join(lines)
 
 
-def get_news(per_source: int = 6) -> str:
-    per_source = max(1, min(int(per_source), 15))
+def get_news() -> str:
     with cf.ThreadPoolExecutor(max_workers=len(settings.news_feeds) or 1) as pool:
-        parts = pool.map(lambda f: _fetch(f[0], f[1], per_source), settings.news_feeds)
+        parts = pool.map(lambda f: _fetch(f[0], f[1], 6), settings.news_feeds)
         return "\n\n".join(parts)

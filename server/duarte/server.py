@@ -17,7 +17,7 @@ from pipecat.transports.smallwebrtc.request_handler import (
 from .bot import run_bot
 from .config import settings
 from .stt import get_model
-from .voices import preload as preload_voices
+from .voices import make_piper
 
 webrtc = SmallWebRTCRequestHandler()
 
@@ -26,7 +26,7 @@ webrtc = SmallWebRTCRequestHandler()
 async def lifespan(_app: FastAPI):
     # Carrega o Whisper e as vozes no arranque para a primeira ligação não esperar por eles.
     get_model(settings.whisper_model)
-    preload_voices()
+    make_piper()
     logger.info("Whisper e vozes prontos")
     yield
     await webrtc.close()

@@ -14,7 +14,7 @@ def test_health_and_page(tmp_path, monkeypatch):
 
     importlib.reload(server)
     monkeypatch.setattr(server, "get_model", lambda name: None)
-    monkeypatch.setattr(server, "preload_voices", lambda: None)
+    monkeypatch.setattr(server, "make_piper", lambda: None)
     with TestClient(server.app) as client:
         assert client.get("/api/health").json() == {"ok": True}
         assert "Jarvis" in client.get("/").text

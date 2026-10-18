@@ -12,6 +12,6 @@ def test_elevenlabs_when_key_set(monkeypatch):
 
 
 def test_piper_without_key(monkeypatch):
-    monkeypatch.setattr(voices, "_piper", lambda: "piper")
+    monkeypatch.setattr(voices, "make_piper", lambda: "piper")
     monkeypatch.setattr(voices, "settings", SimpleNamespace(elevenlabs_api_key=""))
     assert voices.make_tts() == "piper"

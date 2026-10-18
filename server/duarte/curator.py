@@ -8,7 +8,7 @@ from claude_agent_sdk import ClaudeSDKError, ResultMessage, query
 from loguru import logger
 from pydantic import BaseModel, Field
 
-from .brain import base_options
+from .brain import base_options, content_text
 from .config import settings
 from .tools import memory
 
@@ -51,21 +51,13 @@ class Review(BaseModel):
     candidates: list[Candidate]
 
 
-def _text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict) and p.get("type") == "text")
-    return ""
-
-
 def transcript(messages: list) -> str:
     """Só o que o Gustavo e o Duarte disseram, sem chamadas a ferramentas."""
     lines = []
     for msg in messages:
         if not isinstance(msg, dict) or msg.get("role") not in ("user", "assistant"):
             continue
-        text = " ".join(_text(msg.get("content")).split())
+        text = " ".join(content_text(msg.get("content")).split())
         if not text or text.startswith(GREETING_MARK):
             continue
         lines.append(f"{'Gustavo' if msg['role'] == 'user' else 'Duarte'}: {text}")
