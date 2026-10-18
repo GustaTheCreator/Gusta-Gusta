@@ -43,6 +43,10 @@ class Settings:
     models_dir: Path = Path(_env("MODELS_DIR", "./models"))
     memory_dir: Path = Path(_env("MEMORY_DIR", "./data/memory"))
 
+    # Voz natural (ElevenLabs, na nuvem). Sem chave, usa a Piper local, que é a reserva.
+    elevenlabs_api_key: str = _env("ELEVENLABS_API_KEY", "")
+    elevenlabs_voice_id: str = _env("ELEVENLABS_VOICE_ID", "onwK4e9ZLuTAKqWW03F9")  # Daniel, britânico
+    elevenlabs_model: str = _env("ELEVENLABS_MODEL", "eleven_flash_v2_5")
     piper_voice: str = _env("PIPER_VOICE", "en_GB-alan-medium")
 
     default_city: str = _env("DEFAULT_CITY", "Lisbon")

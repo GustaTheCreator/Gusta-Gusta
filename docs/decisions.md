@@ -7,3 +7,4 @@
 2026-10-18 — App renamed to Duarte (repo/package/container unchanged); Portuguese-only: Piper pt_PT-tugao-medium, Whisper small multilingual forced to pt, English voice removed; memory notes stay in English — user request
 2026-10-18 — Revised: Gustavo speaks Portuguese (Whisper small, forced pt), Duarte answers in English with Piper en_GB-alan-medium; Portuguese voice dropped — user happy with an English voice, and ElevenLabs free tier cannot use Portuguese library voices
 2026-10-18 — Project renamed to Duarte: Python package duarte, container/service duarte, MCP server name duarte; memory state dir stays .jarvis to keep existing server data
+2026-10-18 — Voice via ElevenLabs (eleven_flash_v2_5, Daniel en-GB) when ELEVENLABS_API_KEY is set, Piper Alan as fallback — user wants a fluid voice; free tier 10k chars/month, library voices need a paid plan
