@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from jarvis.tools import memory
+from duarte.tools import memory
 
 
 @pytest.fixture(autouse=True)

@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from jarvis.tools import memory, news, weather
+from duarte.tools import memory, news, weather
 
 RSS = """<?xml version="1.0"?><rss version="2.0"><channel><title>X</title>
 <item><title>Governo aprova orçamento</title><description>Votado hoje.</description></item>

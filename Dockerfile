@@ -13,7 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
 WORKDIR /app
 COPY server/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY server/jarvis ./jarvis
+COPY server/duarte ./duarte
 COPY --from=web /web/dist ./web
 EXPOSE 7860
-CMD ["python", "-m", "jarvis.server"]
+CMD ["python", "-m", "duarte.server"]

@@ -28,8 +28,8 @@ from pipecat.services.settings import LLMSettings
 from .config import settings
 from .tools import memory, news, weather
 
-SERVER = "jarvis"
-FILLER = "Um momento."
+SERVER = "duarte"
+FILLER = "One moment."
 # Ferramentas que demoram o suficiente para justificar a frase de espera.
 SLOW_TOOLS = {f"mcp__{SERVER}__get_news", f"mcp__{SERVER}__get_weather", "WebSearch"}
 
@@ -38,7 +38,7 @@ def _text(value: str) -> dict:
     return {"content": [{"type": "text", "text": value}]}
 
 
-@tool("get_news", "Get today's headlines from the main Portuguese newspapers (in Portuguese; summarise them in Portuguese).", {})
+@tool("get_news", "Get today's headlines from the main Portuguese newspapers (in Portuguese; summarise them in English).", {})
 async def get_news(args):
     return _text(await asyncio.to_thread(news.get_news))
 

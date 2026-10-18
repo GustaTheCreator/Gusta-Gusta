@@ -2,7 +2,7 @@
 
 Assistente pessoal de voz ao estilo do J.A.R.V.I.S., para correr num homeserver modesto e usar a partir do telemóvel.
 
-A página tem só uma bola. Tocas nela e falas: fica azul e mexe-se com a tua voz, e fica dourada quando o Duarte responde. Fala-se com ele em português (de Portugal): o Whisper corre com a língua fixada em português, sem deteção automática, e a voz é a Piper pt_PT-tugao. As notícias vêm dos jornais portugueses.
+A página tem só uma bola. Tocas nela e falas: fica azul e mexe-se com a tua voz, e fica dourada quando o Duarte responde. Falas-lhe em português e ele responde em inglês, com a voz Piper Alan: o Whisper corre com a língua fixada em português, sem deteção automática. As notícias vêm dos jornais portugueses, resumidas em inglês.
 
 ```
 Telemóvel (browser) ──WebRTC por Tailscale──► homeserver (Docker)
@@ -23,7 +23,7 @@ Telemóvel (browser) ──WebRTC por Tailscale──► homeserver (Docker)
 git clone https://github.com/GustaTheCreator/Gusta-Gusta.git && cd Gusta-Gusta
 claude setup-token              # num PC com o Claude Code: gera o token da subscrição
 cp .env.example .env            # mete-o em CLAUDE_CODE_OAUTH_TOKEN
-./scripts/download_voices.sh    # voz Piper (Tugão, português)
+./scripts/download_voices.sh    # voz Piper (Alan, inglês)
 docker compose up -d --build    # o Whisper descarrega-se no primeiro arranque
 ```
 
@@ -65,7 +65,7 @@ Cada nota tem propriedades (`type`, `aliases`, `mentions`, `updated`). O prompt 
 
 ## Conversa
 
-- **Fim da tua vez:** o Duarte responde depois de ~0,9 s de silêncio. Se a frase parecer a meio ("fala-me das..."), espera mais 1,2 s. Os valores estão no topo de `server/jarvis/bot.py`.
+- **Fim da tua vez:** o Duarte responde depois de ~0,9 s de silêncio. Se a frase parecer a meio ("fala-me das..."), espera mais 1,2 s. Os valores estão no topo de `server/duarte/bot.py`.
 - **Interromper:** fala por cima dele e ele cala-se. Ruídos curtos (menos de 0,3 s) já não o cortam. Se só disseres "stop" ou "that's enough", responde com duas palavras e espera.
 
 ## Desenvolvimento
@@ -75,7 +75,7 @@ Cada nota tem propriedades (`type`, `aliases`, `mentions`, `updated`). O prompt 
 cd server && python -m venv .venv && . .venv/bin/activate
 pip install -r requirements-dev.txt
 pytest
-python -m jarvis.server          # http://localhost:7860
+python -m duarte.server          # http://localhost:7860
 
 # página (noutro terminal), com hot reload e proxy para o servidor
 cd web && npm install && npm run dev
@@ -83,10 +83,10 @@ cd web && npm install && npm run dev
 
 ## Estrutura
 
-- `server/jarvis/bot.py`: o pipeline de voz e as ferramentas que o Claude pode usar
-- `server/jarvis/stt.py`: Whisper só em português
-- `server/jarvis/turns.py`: quando é que acabaste de falar
-- `server/jarvis/voices.py`: a voz Piper (Tugão)
-- `server/jarvis/curator.py`: revisão da conversa no fim, para a memória
-- `server/jarvis/tools/`: notícias (RSS), meteorologia (Open-Meteo), pesquisa web e memória por tópicos
+- `server/duarte/bot.py`: o pipeline de voz e as ferramentas que o Claude pode usar
+- `server/duarte/stt.py`: Whisper só em português
+- `server/duarte/turns.py`: quando é que acabaste de falar
+- `server/duarte/voices.py`: a voz Piper (Alan)
+- `server/duarte/curator.py`: revisão da conversa no fim, para a memória
+- `server/duarte/tools/`: notícias (RSS), meteorologia (Open-Meteo), pesquisa web e memória por tópicos
 - `web/src/Orb.tsx`: a bola

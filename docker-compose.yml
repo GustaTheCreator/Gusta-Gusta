@@ -1,7 +1,7 @@
 services:
-  jarvis:
+  duarte:
     build: .
-    container_name: jarvis
+    container_name: duarte
     env_file: .env
     volumes:
       - ./models:/models        # Whisper e vozes Piper (descarregados)

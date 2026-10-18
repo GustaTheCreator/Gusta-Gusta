@@ -43,7 +43,7 @@ class Settings:
     models_dir: Path = Path(_env("MODELS_DIR", "./models"))
     memory_dir: Path = Path(_env("MEMORY_DIR", "./data/memory"))
 
-    piper_voice: str = _env("PIPER_VOICE", "pt_PT-tugao-medium")
+    piper_voice: str = _env("PIPER_VOICE", "en_GB-alan-medium")
 
     default_city: str = _env("DEFAULT_CITY", "Lisbon")
     news_feeds: list[tuple[str, str]] = field(

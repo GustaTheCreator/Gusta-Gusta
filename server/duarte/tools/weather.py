@@ -16,7 +16,7 @@ def get_weather(city: str | None = None) -> str:
     city = (city or settings.default_city).strip()
     geo = httpx.get(
         "https://geocoding-api.open-meteo.com/v1/search",
-        params={"name": city, "count": 1, "language": "pt"},
+        params={"name": city, "count": 1, "language": "en"},
         timeout=8,
     ).json()
     if not geo.get("results"):

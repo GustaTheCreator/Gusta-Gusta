@@ -3,8 +3,8 @@ from types import SimpleNamespace
 import pytest
 from claude_agent_sdk import ResultMessage
 
-from jarvis import curator
-from jarvis.tools import memory
+from duarte import curator
+from duarte.tools import memory
 
 
 @pytest.fixture(autouse=True)

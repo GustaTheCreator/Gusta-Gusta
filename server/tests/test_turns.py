@@ -8,7 +8,7 @@ from pipecat.frames.frames import (
 )
 from pipecat.utils.asyncio.task_manager import TaskManager
 
-from jarvis.turns import PatientTurnStop, looks_unfinished
+from duarte.turns import PatientTurnStop, looks_unfinished
 
 
 @pytest.mark.parametrize(

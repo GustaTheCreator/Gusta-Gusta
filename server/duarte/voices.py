@@ -1,4 +1,4 @@
-"""A voz do Jarvis (Piper, 100% local)."""
+"""A voz do Duarte (Piper, 100% local)."""
 from functools import cache
 
 from piper import PiperVoice

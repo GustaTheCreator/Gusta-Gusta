@@ -1,4 +1,4 @@
-"""Manchetes do dia a partir de RSS (em português; o Claude resume-as em português)."""
+"""Manchetes do dia a partir de RSS (em português; o Claude resume-as em inglês)."""
 import concurrent.futures as cf
 
 import feedparser

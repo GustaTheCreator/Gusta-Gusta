@@ -7,10 +7,10 @@ def test_health_and_page(tmp_path, monkeypatch):
     monkeypatch.setenv("WEB_DIR", str(tmp_path))
     import importlib
 
-    from jarvis import config
+    from duarte import config
 
     importlib.reload(config)
-    from jarvis import server
+    from duarte import server
 
     importlib.reload(server)
     monkeypatch.setattr(server, "get_model", lambda name: None)
